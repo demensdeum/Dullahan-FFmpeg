@@ -5,7 +5,7 @@ A DLL-based library encapsulating FFmpeg is a versatile multimedia processing to
 ## Build
 To compile the library and run a usage example, you can use the "build.sh" script within the MSYS2 MinGW environment. It includes both C and C++ examples.
 
-The test video "video.mp4" is sourced from the movie "1000 Days" (2006) directed by Christoph Steinau. (Creative Commons)
+The test video "carpaccio.mp4" is sourced from the movie "1000 Days" (2006) directed by Christoph Steinau. (Creative Commons)
 
 
 FFmpeg README
