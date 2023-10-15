@@ -1,3 +1,13 @@
+Headless-FFmpeg README
+=============
+A DLL-based library encapsulating FFmpeg is a versatile multimedia processing tool tailored for Windows applications. Key features include multi-format support, cross-platform capabilities, easy integration, various functionalities (e.g., decoding, encoding, filtering), compatibility with multiple programming languages, an active developer community, and licensing that allows commercial use under LGPL. It empowers developers to work with multimedia data efficiently, making it suitable for a wide range of Windows-based applications.
+
+## Build
+To compile the library and run a usage example, you can use the "build.sh" script within the MSYS2 MinGW environment. It includes both C and C++ examples.
+
+The test video "video.mp4" is sourced from the movie "1000 Days" (2006) directed by Christoph Steinau. (Creative Commons)
+
+
 FFmpeg README
 =============
 

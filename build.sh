@@ -1,4 +1,4 @@
-echo "GPL! NONFREE! libx264! DEBUG!"
+echo "GPL! libx264! DEBUG!"
 echo "Configuring..."
 ./configure \
     --enable-shared \
@@ -37,7 +37,9 @@ gcc -DHEADLESS_FFMPEG_ENABLED=1\
      -L libswscale -l swscale \
      -L libswresample -l swresample
 
-gcc -g headless_ffmpeg_test.c -L . -l headless_ffmpeg -o headless_ffmpeg_test.exe
+echo "Building C example application..."
+
+gcc -g headless_ffmpeg_test.c -L . -l headless_ffmpeg -o headless_ffmpeg_test_c.exe
 cp libavfilter/avfilter-9.dll .
 cp libavcodec/avcodec-60.dll .
 cp libavdevice/avdevice-60.dll .
@@ -46,4 +48,9 @@ cp libavutil/avutil-58.dll .
 cp libpostproc/postproc-57.dll .
 cp libswresample/swresample-4.dll .
 cp libswscale/swscale-7.dll .
-./headless_ffmpeg_test.exe
+./headless_ffmpeg_test_c.exe
+
+echo "Building C++ example application..."
+
+g++ -g headless_ffmpeg_test.cpp -L . -l headless_ffmpeg -o headless_ffmpeg_test_cpp.exe
+./headless_ffmpeg_test_cpp.exe

@@ -12,12 +12,12 @@ int main() {
     argv[0] = "ffmpeg";
     argv[1] = "-y";
     argv[2] = "-i";
-    argv[3] = "phones.mp4";
+    argv[3] = "carpaccio.mp4";
     argv[4] = "-ss";
-    argv[5] = "16";
+    argv[5] = "0";
     argv[6] = "-to";
-    argv[7] = "20";
-    argv[8] = "phones_output.mp4";
+    argv[7] = "5";
+    argv[8] = "carpaccio_output.mp4";
 
     printf("TRY 1\n");
     headless_main(argc, argv);
