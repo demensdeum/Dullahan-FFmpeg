@@ -1288,9 +1288,27 @@ static int64_t getmaxrss(void)
     return 0;
 #endif
 }
-
+#if HEADLESS_FFMPEG_ENABLED
+int headless_main(int argc, char **argv)
+#else
 int main(int argc, char **argv)
+#endif
 {
+    for (int i = 0; i < argc; i++) {
+        printf("argv[%d]: %s\n", i, argv[i]);
+    }
+
+
+    nb_filtergraphs = 0;
+    nb_input_files = 0;
+    progress_avio = NULL;
+
+    input_files = NULL;
+    nb_input_files = 0;
+
+    output_files = NULL;
+    nb_output_files = 0;
+
     int ret, err_rate_exceeded;
     BenchmarkTimeStamps ti;
 

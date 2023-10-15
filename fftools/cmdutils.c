@@ -162,6 +162,8 @@ static const OptionDef *find_option(const OptionDef *po, const char *name)
 /* _WIN32 means using the windows libc - cygwin doesn't define that
  * by default. HAVE_COMMANDLINETOARGVW is true on cygwin, while
  * it doesn't provide the actual command line via GetCommandLineW(). */
+
+#ifndef HEADLESS_FFMPEG_ENABLED
 #if HAVE_COMMANDLINETOARGVW && defined(_WIN32)
 #include <shellapi.h>
 /* Will be leaked on exit */
@@ -222,6 +224,12 @@ static inline void prepare_app_arguments(int *argc_ptr, char ***argv_ptr)
     /* nothing to do */
 }
 #endif /* HAVE_COMMANDLINETOARGVW */
+#else
+static inline void prepare_app_arguments(int *argc_ptr, char ***argv_ptr)
+{
+    /* nothing to do */
+}
+#endif
 
 static int write_option(void *optctx, const OptionDef *po, const char *opt,
                         const char *arg)
