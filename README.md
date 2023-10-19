@@ -1,4 +1,4 @@
-Headless-FFmpeg README
+Dullahan-FFmpeg README
 =============
 A DLL-based library encapsulating FFmpeg is a versatile multimedia processing tool tailored for Windows applications. Key features include multi-format support, cross-platform capabilities, easy integration, various functionalities (e.g., decoding, encoding, filtering), compatibility with multiple programming languages, an active developer community, and licensing that allows commercial use under LGPL. It empowers developers to work with multimedia data efficiently, making it suitable for a wide range of Windows-based applications.
 
