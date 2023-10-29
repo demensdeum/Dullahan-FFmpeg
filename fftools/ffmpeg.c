@@ -101,6 +101,11 @@
 #include "ffmpeg.h"
 #include "sync_queue.h"
 
+#ifdef DULLAHAN_FFMPEG_ENABLED  
+#include <inttypes.h>
+#include <stdbool.h>
+#endif
+
 const char program_name[] = "ffmpeg";
 const int program_birth_year = 2000;
 
@@ -111,6 +116,10 @@ typedef struct BenchmarkTimeStamps {
     int64_t user_usec;
     int64_t sys_usec;
 } BenchmarkTimeStamps;
+
+#ifdef DULLAHAN_FFMPEG_ENABLED  
+bool dullahan_ffmpeg_conversion_aborted();
+#endif
 
 static BenchmarkTimeStamps get_benchmark_time_stamps(void);
 static int64_t getmaxrss(void);
@@ -174,6 +183,13 @@ void term_exit(void)
     term_exit_sigsafe();
 }
 
+#ifdef DULLAHAN_FFMPEG_ENABLED  
+static pthread_mutex_t private_conversion_aborted_mutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t private_pts_mutex = PTHREAD_MUTEX_INITIALIZER;
+static bool private_conversion_aborted = false;
+static uint64_t private_pts = 0;
+#endif
+
 static volatile int received_sigterm = 0;
 static volatile int received_nb_signals = 0;
 static atomic_int transcode_init_done = ATOMIC_VAR_INIT(0);
@@ -236,6 +252,58 @@ static BOOL WINAPI CtrlHandler(DWORD fdwCtrlType)
 #else
 #define SIGNAL(sig, func) \
     signal(sig, func)
+#endif
+
+#ifdef DULLAHAN_FFMPEG_ENABLED  
+void dullahan_ffmpeg_reset()
+{
+    nb_filtergraphs = 0;
+    nb_input_files = 0;
+    progress_avio = NULL;
+
+    input_files = NULL;
+    nb_input_files = 0;
+
+    output_files = NULL;
+    nb_output_files = 0;
+
+    pthread_mutex_lock(&private_pts_mutex);
+    private_pts = 0;
+    pthread_mutex_unlock(&private_pts_mutex);    
+
+    pthread_mutex_lock(&private_conversion_aborted_mutex);
+    if (private_conversion_aborted) {
+        private_conversion_aborted = false;
+    }
+    pthread_mutex_unlock(&private_conversion_aborted_mutex);
+}
+
+void dullahan_ffmpeg_cancel()
+{
+    pthread_mutex_lock(&private_conversion_aborted_mutex);
+    if (!private_conversion_aborted) {
+        private_conversion_aborted = true;
+    }
+    pthread_mutex_unlock(&private_conversion_aborted_mutex);
+}
+
+bool dullahan_ffmpeg_conversion_aborted() 
+{
+    bool conversion_aborted = false;
+    pthread_mutex_lock(&private_conversion_aborted_mutex);
+    conversion_aborted = private_conversion_aborted;
+    pthread_mutex_unlock(&private_conversion_aborted_mutex);
+    return conversion_aborted;
+}
+
+int dullahan_ffmpeg_conversion_pts()
+{
+    int returnPts = 0;
+    pthread_mutex_lock(&private_pts_mutex);
+    returnPts = private_pts;
+    pthread_mutex_unlock(&private_pts_mutex);
+    return returnPts;
+}
 #endif
 
 void term_init(void)
@@ -384,7 +452,11 @@ static void ffmpeg_cleanup(int ret)
 
     avformat_network_deinit();
 
+#ifdef DULLAHAN_FFMPEG_ENABLED  
+    if (dullahan_ffmpeg_conversion_aborted()) {
+#else
     if (received_sigterm) {
+#endif
         av_log(NULL, AV_LOG_INFO, "Exiting normally, received signal %d.\n",
                (int) received_sigterm);
     } else if (ret && atomic_load(&transcode_init_done)) {
@@ -573,6 +645,12 @@ static void print_report(int is_last_report, int64_t timer_start, int64_t cur_ti
     mins  = FFABS64U(pts) / AV_TIME_BASE / 60 % 60;
     hours = FFABS64U(pts) / AV_TIME_BASE / 3600;
     hours_sign = (pts < 0) ? "-" : "";
+
+#ifdef DULLAHAN_FFMPEG_ENABLED
+    pthread_mutex_lock(&private_pts_mutex);
+    private_pts = pts;
+    pthread_mutex_unlock(&private_pts_mutex);
+#endif
 
     bitrate = pts != AV_NOPTS_VALUE && pts && total_size >= 0 ? total_size * 8 / (pts / 1000.0) : -1;
     speed   = pts != AV_NOPTS_VALUE && t != 0.0 ? (double)pts / AV_TIME_BASE / t : -1;
@@ -1180,7 +1258,11 @@ static int transcode(int *err_rate_exceeded)
 
     timer_start = av_gettime_relative();
 
-    while (!received_sigterm) {
+#ifdef DULLAHAN_FFMPEG_ENABLED  
+    while (!dullahan_ffmpeg_conversion_aborted()) {
+#else
+    while (!received_sigterm) {        
+#endif
         OutputStream *ost;
         int64_t cur_time= av_gettime_relative();
 
@@ -1288,26 +1370,19 @@ static int64_t getmaxrss(void)
     return 0;
 #endif
 }
-#if HEADLESS_FFMPEG_ENABLED
-int headless_main(int argc, char **argv)
+#ifdef DULLAHAN_FFMPEG_ENABLED  
+int dullahan_ffmpeg_main(int argc, char **argv)
 #else
 int main(int argc, char **argv)
 #endif
 {
+#ifdef DULLAHAN_FFMPEG_ENABLED
+    dullahan_ffmpeg_reset();
+
     for (int i = 0; i < argc; i++) {
         printf("argv[%d]: %s\n", i, argv[i]);
     }
-
-
-    nb_filtergraphs = 0;
-    nb_input_files = 0;
-    progress_avio = NULL;
-
-    input_files = NULL;
-    nb_input_files = 0;
-
-    output_files = NULL;
-    nb_output_files = 0;
+#endif
 
     int ret, err_rate_exceeded;
     BenchmarkTimeStamps ti;

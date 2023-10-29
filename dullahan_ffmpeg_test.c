@@ -1,8 +1,8 @@
-#include "fftools/ffmpeg_headless.h"
+#include "fftools/dullahan_ffmpeg.h"
 #include <stdio.h>
 
 int main() {
-    printf("started\n");
+    printf("Dullahan-FFmpeg Usage Test Started (C)\n");
 
     #define ARGS_LENGTH 9
 
@@ -20,15 +20,15 @@ int main() {
     argv[8] = "carpaccio_output.mp4";
 
     printf("TRY 1\n");
-    headless_main(argc, argv);
+    dullahan_ffmpeg_main(argc, argv);
     printf("TRY 2\n");
-    headless_main(argc, argv);
+    dullahan_ffmpeg_main(argc, argv);
     printf("TRY 3\n");
-    headless_main(argc, argv);
+    dullahan_ffmpeg_main(argc, argv);
     printf("TRY 4\n");
-    headless_main(argc, argv);
+    dullahan_ffmpeg_main(argc, argv);
     printf("TRY 5\n");
-    headless_main(argc, argv);
+    dullahan_ffmpeg_main(argc, argv);
 
-    return 1;
+    return 0;
 }
