@@ -15,6 +15,7 @@ install_libs=false
 debug_flag="-g"
 optimization_flags=""
 ffmpeg_debug_level=3
+target_arch="i686"
 
 for arg in "$@"; do
     if [ "$arg" = "--clean" ]; then
@@ -198,3 +199,5 @@ if [ "$install_libs" == true ]; then
     done
   done
 fi
+
+echo "1" > /tmp/Dullahan-FFmpeg-Build-Complete
