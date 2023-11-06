@@ -47,3 +47,4 @@ carpaccio_output.mp4
 carpaccio_output.webm
 output.gif
 .vscode/
+libavfilter/x86/*

@@ -296,9 +296,9 @@ bool dullahan_ffmpeg_conversion_aborted()
     return conversion_aborted;
 }
 
-int dullahan_ffmpeg_conversion_pts()
+int64_t dullahan_ffmpeg_conversion_pts()
 {
-    int returnPts = 0;
+    int64_t returnPts = 0;
     pthread_mutex_lock(&private_pts_mutex);
     returnPts = private_pts;
     pthread_mutex_unlock(&private_pts_mutex);
@@ -1330,6 +1330,11 @@ static int transcode(int *err_rate_exceeded)
 static BenchmarkTimeStamps get_benchmark_time_stamps(void)
 {
     BenchmarkTimeStamps time_stamps = { av_gettime_relative() };
+#ifdef DULLAHAN_FFMPEG_ENABLED
+    // crash on x86 systems
+    return time_stamps;
+#endif
+
 #if HAVE_GETRUSAGE
     struct rusage rusage;
 

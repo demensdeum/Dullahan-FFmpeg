@@ -31,7 +31,7 @@ int main() {
     thread.detach();
 
     std::this_thread::sleep_for(std::chrono::seconds(3));
-    int pts = dullahan_ffmpeg_conversion_pts();
+    auto pts = dullahan_ffmpeg_conversion_pts();
     std::cout << std::endl << "---" << std::endl << "pts: " << pts << "---" << std::endl;
     std::this_thread::sleep_for(std::chrono::seconds(3));    
     dullahan_ffmpeg_cancel();
