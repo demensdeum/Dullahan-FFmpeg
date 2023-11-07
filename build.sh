@@ -7,7 +7,7 @@ install_libs=false
 debug_flag="-g"
 optimization_flags=""
 ffmpeg_configure_debug_flags="--enable-debug=3 --disable-optimizations"
-target_arch="-m64"
+target_arch=""
 project_path_debug32="C:/Users/Demensdeum/Documents/Sources/build-RaidenVideoRipper-Desktop_Qt_6_6_0_MinGW_32_bit-Debug/debug"
 project_path_release32="C:/Users/Demensdeum/Documents/Sources/build-RaidenVideoRipper-Desktop_Qt_6_6_0_MinGW_32_bit-Debug/release"
 project_path_debug64="C:/Users/Demensdeum/Documents/Sources/build-RaidenVideoRipper-Desktop_Qt_6_6_0_MinGW_64_bit-Debug/debug"
@@ -34,17 +34,29 @@ for arg in "$@"; do
         project_path_release=$project_path_release32
         echo "Target arch is x86..."
         echo "!!!!!!RUUUUN IT FROM MINGW32, NOT ORDINARY MSYS2 shell!!!!!!!!!!!"     
+    elif [ "$arg" = "--x86_64" ]; then
+        target_arch="-m64"
+        project_path_debug=$project_path_debug64
+        project_path_release=$project_path_release64
+        echo "Target arch is x86_64..."      
     elif [ "$arg" = "--release" ]; then
         ffmpeg_configure_debug_flags=""
         debug_flag=""
         optimization_flags="-O3"
         ffmpeg_debug_level=0
         echo "Release version..."
-    else
-        echo "Unknown argument: $arg"
+    elif [ "$arg" != "" ]; then
+        echo "Error! Unknown argument: $arg"
+        sleep 2
         exit 2
     fi
 done
+
+if [ "$target_arch" = "" ]; then
+    echo "No arch selected! Use (--x86 or --x86_64 flags)"
+    exit 3
+fi
+
 
 rm *.dll
 
