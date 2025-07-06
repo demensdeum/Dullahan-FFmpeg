@@ -92,19 +92,60 @@ fi
 
 fi
 
+echo "Building FFmpeg..."
+
 make
+
+if [ $? -ne 0 ]; then
+    echo "FFmpeg building error!"
+    exit 1
+fi
 
 echo "Copying built dlls..."
 
 cp libavfilter/avfilter-9.dll .
-cp libavcodec/avcodec-60.dll .
-cp libavdevice/avdevice-60.dll .
-cp libavformat/avformat-60.dll .
-cp libavutil/avutil-58.dll .
-cp libpostproc/postproc-57.dll .
-cp libswresample/swresample-4.dll .
-cp libswscale/swscale-7.dll .
+if [ $? -ne 0 ]; then
+    echo "dlls copying error!"
+    exit 1
+fi
 
+cp libavcodec/avcodec-60.dll .
+if [ $? -ne 0 ]; then
+    echo "dlls copying error!"
+    exit 1
+fi
+
+cp libavdevice/avdevice-60.dll .
+if [ $? -ne 0 ]; then
+    echo "dlls copying error!"
+    exit 1
+fi
+
+cp libavformat/avformat-60.dll .
+if [ $? -ne 0 ]; then
+    echo "dlls copying error!"
+    exit 1
+fi
+
+cp libavutil/avutil-58.dll .
+if [ $? -ne 0 ]; then
+    echo "dlls copying error!"
+    exit 1
+fi
+
+cp libpostproc/postproc-57.dll .
+if [ $? -ne 0 ]; then
+    echo "dlls copying error!"
+    exit 1
+fi
+
+cp libswresample/swresample-4.dll .
+if [ $? -ne 0 ]; then
+    echo "dlls copying error!"
+    exit 1
+fi
+
+cp libswscale/swscale-7.dll .
 if [ $? -ne 0 ]; then
     echo "dlls copying error!"
     exit 1
