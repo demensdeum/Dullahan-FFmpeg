@@ -10,8 +10,8 @@ ffmpeg_configure_debug_flags="--enable-debug=3 --disable-optimizations"
 target_arch=""
 project_path_debug32="C:/Users/Demensdeum/Documents/Sources/build-RaidenVideoRipper-Desktop_Qt_6_6_0_MinGW_32_bit-Debug/debug"
 project_path_release32="C:/Users/Demensdeum/Documents/Sources/build-RaidenVideoRipper-Desktop_Qt_6_6_0_MinGW_32_bit-Debug/release"
-project_path_debug64="C:/Users/Demensdeum/Documents/Sources/build-RaidenVideoRipper-Desktop_Qt_6_6_0_MinGW_64_bit-Debug/debug"
-project_path_release64="C:/Users/Demensdeum/Documents/Sources/build-RaidenVideoRipper-Desktop_Qt_6_6_0_MinGW_64_bit-Release/release"
+project_path_debug64="C:/Users/Demensdeum/Documents/Sources/Demensdeum/RaidenVideoRipper/build/Desktop_Qt_6_9_0_MinGW_64_bit-Debug/debug"
+project_path_release64="C:\Users\Demensdeum\Documents\Sources\Demensdeum\RaidenVideoRipper\build\Desktop_Qt_6_9_0_MinGW_64_bit-Release\release"
 project_path_debug=$project_path_debug64
 project_path_release=$project_path_release64
 
@@ -27,7 +27,7 @@ for arg in "$@"; do
         echo "Run examples"
     elif [ "$arg" = "--install-libs" ]; then
         install_libs=true
-        echo "Installing DLLs to DemensDeum's PC for Raiden Video Ripper project..."
+        echo "Enabled install of DLLs for DemensDeum's PC for Raiden Video Ripper project..."
     elif [ "$arg" = "--x86" ]; then
         target_arch="-m32"
         project_path_debug=$project_path_debug32
@@ -63,7 +63,7 @@ rm *.dll
 # Change directories for your tasks
 
 target_directories=(
-  "C:/Users/Demensdeum/Documents/Sources/RaidenVideoRipper"
+  "C:/Users/Demensdeum/Documents/Sources/Demensdeum/RaidenVideoRipper"
   $project_path_debug
   $project_path_release
 )
@@ -83,6 +83,7 @@ echo "Configuring..."
     --enable-gpl \
     --enable-libvpx \
     --enable-libvorbis \
+    --enable-w32threads \
     $ffmpeg_configure_debug_flags
 
 if [ $? -ne 0 ]; then
